@@ -13,7 +13,9 @@ export const APP_ENVS = ["development", "staging", "production"] as const;
 export type AppEnv = (typeof APP_ENVS)[number];
 
 function readEnv(name: string, fallback?: string): string {
-  const value = process.env[name] ?? fallback;
+  const raw = process.env[name];
+  const value =
+    raw === undefined || raw === null || raw === "" ? fallback : raw;
 
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);
@@ -32,9 +34,7 @@ function parseAppEnv(value: string): AppEnv {
   );
 }
 
-const appEnv = parseAppEnv(
-  readEnv("NEXT_PUBLIC_APP_ENV", "development"),
-);
+const appEnv = parseAppEnv(readEnv("NEXT_PUBLIC_APP_ENV", "development"));
 
 export const env = {
   appEnv,
