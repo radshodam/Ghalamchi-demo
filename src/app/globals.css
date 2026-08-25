@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-vazirmatn);
+
+  --color-brand-50: #e0f2fe;
+  --color-brand-100: #bae6fd;
+  --color-brand-200: #7dd3fc;
+  --color-brand-500: #0ea5e9;
+  --color-brand-600: #0284c7;
+  --color-brand-700: #0369a1;
+  --color-brand-800: #075985;
+
+  --color-paper-50: #fff8f1;
+  --color-paper-100: #f8eadc;
+  --color-paper-200: #edd6bf;
+
+  --color-ink-400: #9a7f6e;
+  --color-ink-500: #7a6254;
+  --color-ink-600: #5c473c;
+  --color-ink-700: #3f312b;
+  --color-ink-800: #2b221e;
+  --color-ink-900: #1a1412;
+
+  --color-gold-400: #e8b86d;
+  --color-gold-500: #d4a017;
+
+  --color-primary-50: var(--color-brand-50);
+  --color-primary-200: var(--color-brand-200);
+  --color-primary-500: var(--color-brand-500);
+  --color-primary-600: var(--color-brand-600);
+  --color-primary-700: var(--color-brand-700);
+  --color-primary-800: var(--color-brand-800);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 420px at 100% -10%, rgb(14 165 233 / 0.12), transparent 55%),
+    radial-gradient(900px 380px at -10% 0%, rgb(232 184 109 / 0.22), transparent 50%),
+    var(--color-paper-50);
+  color: var(--color-ink-800);
+}
+
+::selection {
+  background: var(--color-brand-200);
+  color: var(--color-ink-900);
+}
