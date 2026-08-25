@@ -12,6 +12,8 @@ import type {
 } from "@/features/articles/types/article";
 import { Input } from "@/shared/components/ui/input";
 import { Select } from "@/shared/components/ui/select";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@/shared/hooks/use-debounce";
 
 const SORT_OPTIONS = [
   { value: "newest", label: "جدیدترین" },
@@ -36,6 +38,20 @@ interface ArticleFiltersProps {
  * @returns {JSX.Element} Accessible filter controls.
  */
 export function ArticleFilters({ filters, onChange }: ArticleFiltersProps) {
+  const [localSearch, setLocalSearch] = useState(filters.search ?? "");
+
+  useEffect(() => {
+    setLocalSearch(filters.search ?? "");
+  }, [filters.search]);
+
+  const debouncedSearch = useDebounce(localSearch, 1000);
+
+  useEffect(() => {
+    if (debouncedSearch !== filters.search) {
+      onChange({ search: debouncedSearch });
+    }
+  }, [debouncedSearch, filters.search, onChange]);
+
   return (
     <section
       aria-label="فیلتر مقالات"
@@ -46,8 +62,8 @@ export function ArticleFilters({ filters, onChange }: ArticleFiltersProps) {
           id="article-search"
           label="جستجو بر اساس عنوان"
           type="search"
-          value={filters.search}
-          onChange={(event) => onChange({ search: event.target.value })}
+          value={localSearch}
+          onChange={(event) => setLocalSearch(event.target.value)}
           placeholder="مثلاً کنکور"
           autoComplete="off"
         />
@@ -66,7 +82,9 @@ export function ArticleFilters({ filters, onChange }: ArticleFiltersProps) {
         label="مرتب‌سازی"
         value={filters.sort}
         options={SORT_OPTIONS}
-        onChange={(event) => onChange({ sort: event.target.value as SortOrder })}
+        onChange={(event) =>
+          onChange({ sort: event.target.value as SortOrder })
+        }
       />
     </section>
   );
