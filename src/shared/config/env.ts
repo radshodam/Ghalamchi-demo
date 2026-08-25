@@ -25,13 +25,33 @@ function readEnv(name: string, fallback?: string): string {
 }
 
 function parseAppEnv(value: string): AppEnv {
-  if (APP_ENVS.includes(value as AppEnv)) {
-    return value as AppEnv;
+  const raw = (value ?? "").toString().trim().toLowerCase();
+
+  if (APP_ENVS.includes(raw as AppEnv)) {
+    return raw as AppEnv;
   }
 
-  throw new Error(
-    `Invalid NEXT_PUBLIC_APP_ENV "${value}". Expected one of: ${APP_ENVS.join(", ")}`,
+  // Try to infer from Vercel's environment variable when available.
+  const vercel = process.env.VERCEL_ENV?.toString().trim().toLowerCase();
+  if (vercel === "production") return "production";
+  if (vercel === "preview") return "staging";
+  if (vercel === "development") return "development";
+
+  // If the provided value looks like a URL, warn and fall back to production.
+  if (raw.startsWith("http") || raw.includes(".")) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `NEXT_PUBLIC_APP_ENV has invalid value "${value}"; falling back to 'production'.`,
+    );
+    return "production";
+  }
+
+  // Last resort: warn and default to production to avoid build-time throws.
+  // eslint-disable-next-line no-console
+  console.warn(
+    `Invalid NEXT_PUBLIC_APP_ENV "${value}"; expected one of: ${APP_ENVS.join(", ")}. Falling back to 'production'.`,
   );
+  return "production";
 }
 
 const appEnv = parseAppEnv(readEnv("NEXT_PUBLIC_APP_ENV", "development"));
